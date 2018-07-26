@@ -38,9 +38,25 @@ var Player = function () {
 
     this.x = 101 * 2;
     this.y = 83 * 5;
+
+    this.inWater = 0;
 };
 
 Player.prototype.update = function(dt) {
+    // Reached water!
+    if (this.y === 0) {
+
+        // Wait a little before resetting.
+        if (this.inWater > dt * 25) {
+            this.x = 101 * 2;
+            this.y = 83 * 5;
+
+            this.inWater = 0;
+        }
+        else {
+            this.inWater += dt;
+        }
+    }
 }
 
 Player.prototype.render = function() {
@@ -48,6 +64,11 @@ Player.prototype.render = function() {
 }
 
 Player.prototype.handleInput = function(direction) {
+
+    // Disable movement when reached water.
+    if (this.inWater)
+        return;
+
     var x = 0;
     var y = 0;
 
