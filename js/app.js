@@ -38,6 +38,24 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
+Player.prototype.handleInput = function(direction) {
+    var x = 0;
+    var y = 0;
+
+    if (direction === 'left')
+        x = -101;
+    if (direction === 'right')
+        x = 101;
+    if (direction === 'up')
+        y = -83;
+    if (direction === 'down')
+        y = 83;
+
+    // Make sure player cannot move outside the area.
+    this.x = Math.max(0, Math.min(this.x + x, 4 * 101));
+    this.y = Math.max(0, Math.min(this.y + y, 5 * 83));
+}
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
