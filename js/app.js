@@ -1,7 +1,7 @@
 var pausedAt = 0;
 
 // Enemies our player must avoid
-var Enemy = function(x, y, speed) {
+var Enemy = function(x, y, speed, player) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -13,6 +13,8 @@ var Enemy = function(x, y, speed) {
     this.y = y;
 
     this.speed = speed;
+
+    this.player = player;
 };
 
 // Update the enemy's position, required method for game
@@ -23,6 +25,21 @@ Enemy.prototype.update = function(dt) {
     // all computers.
     if (pausedAt != 0)
         return;
+
+    // The player is on the same row as this enemy.
+    if (player.y >= this.y && player.y < this.y + 83) {
+
+        // The player is on the same column as this enemy.
+        // The tile width is 101 pixels, but the enemy and
+        // player pictures are smaller than that. Remove
+        // 20 pixels from both sides so that it looks like
+        // the player has really hit this enemy.
+        if (player.x >= this.x - 81 && player.x < this.x + 101 - 20) {
+
+            // The player has hit this enemy, pause and reset.
+            pausedAt += dt;
+        }
+    }
 
     this.x += dt * this.speed;
 
@@ -46,19 +63,17 @@ var Player = function () {
 };
 
 Player.prototype.update = function(dt) {
+    // Wait a little before resetting.
+    if (pausedAt > dt * 33) {
+        this.x = 101 * 2;
+        this.y = 83 * 5;
+
+        pausedAt = 0;
+    }
+
     // Reached water!
-    if (this.y === 0) {
-
-        // Wait a little before resetting.
-        if (pausedAt > dt * 33) {
-            this.x = 101 * 2;
-            this.y = 83 * 5;
-
-            pausedAt = 0;
-        }
-        else {
-            pausedAt += dt;
-        }
+    if (pausedAt != 0 || this.y === 0) {
+        pausedAt += dt;
     }
 }
 
@@ -92,16 +107,16 @@ Player.prototype.handleInput = function(direction) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [
-    new Enemy(101 * 2, 83 * 1, 50),
-    new Enemy(101 * -1, 83 * 1, 50),
-    new Enemy(101 * 4, 83 * 2, 100),
-    new Enemy(101 * 0, 83 * 3, 33),
-    new Enemy(101 * 2, 83 * 3, 33),
-    new Enemy(101 * 4, 83 * 3, 33)
-];
-
 var player = new Player();
+
+var allEnemies = [
+    new Enemy(101 * 2, 83 * 1, 50, player),
+    new Enemy(101 * -1, 83 * 1, 50, player),
+    new Enemy(101 * 4, 83 * 2, 100, player),
+    new Enemy(101 * 0, 83 * 3, 33, player),
+    new Enemy(101 * 2, 83 * 3, 33, player),
+    new Enemy(101 * 4, 83 * 3, 33, player)
+];
 
 
 // This listens for key presses and sends the keys to your
