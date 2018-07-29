@@ -1,3 +1,5 @@
+var pausedAt = 0;
+
 // Enemies our player must avoid
 var Enemy = function(x, y, speed) {
     // Variables applied to each of our instances go here,
@@ -19,6 +21,9 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    if (pausedAt != 0)
+        return;
+
     this.x += dt * this.speed;
 
     if (this.x > 5 * 101)
@@ -38,8 +43,6 @@ var Player = function () {
 
     this.x = 101 * 2;
     this.y = 83 * 5;
-
-    this.inWater = 0;
 };
 
 Player.prototype.update = function(dt) {
@@ -47,14 +50,14 @@ Player.prototype.update = function(dt) {
     if (this.y === 0) {
 
         // Wait a little before resetting.
-        if (this.inWater > dt * 25) {
+        if (pausedAt > dt * 33) {
             this.x = 101 * 2;
             this.y = 83 * 5;
 
-            this.inWater = 0;
+            pausedAt = 0;
         }
         else {
-            this.inWater += dt;
+            pausedAt += dt;
         }
     }
 }
