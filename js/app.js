@@ -68,8 +68,8 @@ Player.prototype.render = function() {
 
 Player.prototype.handleInput = function(direction) {
 
-    // Disable movement when reached water.
-    if (this.inWater)
+    // Disable movement when paused.
+    if (pausedAt)
         return;
 
     var x = 0;
